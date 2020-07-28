@@ -1,0 +1,14 @@
+button {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid grey;
+    background-color: darkgrey;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+    height: 15px;
+}
