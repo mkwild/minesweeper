@@ -6,6 +6,7 @@ class MineGrid {
         this.columnCount = width
         this.maxMines = maxMines
         this.mines = this.minePlacement()
+        this.isLost = false
     }
 
     minePlacement() {
@@ -18,6 +19,20 @@ class MineGrid {
             }
         }
         return minedCells
+    }
+
+    checkForWin(cellsArray) {
+        let winCondition = (this.rowCount * this.columnCount) - this.maxMines
+        let currentCleared = 0
+        for (let cell = 0; cell < cellsArray.length; cell++) {
+            if (cellsArray[cell].isRevealed) {
+                currentCleared++
+            }
+        }
+        if (currentCleared === winCondition) {
+            clearInterval(timeCounter)
+            alert("You Are Winner!")
+        }
     }
 
     buildGrid() {
@@ -66,6 +81,7 @@ class MineCell {
         if (mouseButton === 0) {
             const button = document.getElementById(this.cellNumber)
             button.innerHTML = this.leftClickHandler(cellsArray)
+            Game.checkForWin(cellsArray)
         }
         else if (mouseButton === 2) {
             const button = document.getElementById(this.cellNumber)
@@ -75,11 +91,15 @@ class MineCell {
 
     leftClickHandler(cells) {
         if (this.isMine) {
+            clearInterval(timeCounter)
+            Game.isLost = true
             alert("Boom! Game Over!")
             this.revealMines(cells)
             return ("&#9760")
         }
         else {
+            const currentCell = document.getElementById(this.cellNumber)
+            currentCell.className = "cleared"
             this.isRevealed = true
             let neighborMines = 0
             for (let cellCount = 0; cellCount < cells.length; cellCount++) {
@@ -133,9 +153,26 @@ class MineCell {
     }
 }
 
-window.addEventListener("contextmenu", function(e) {
+// Timer
+const footerElement = document.querySelector("footer")
+const timer = document.createElement("div")
+timer.className = "timer"
+timer.innerHTML = "0"
+footerElement.append(timer)
+let counter = 0
+let timeCounter = function() {
+    counter++
+    timer.innerHTML = counter
+}
+mainElement.addEventListener("mouseup", function() {
+    if (counter === 0 && Game.isLost === false) {
+        setInterval(timeCounter, 1000)
+    }
+})
+
+mainElement.addEventListener("contextmenu", function(e) {
     e.preventDefault()
 }, false)
 
-const Game = new MineGrid(10, 10, 20)
+const Game = new MineGrid(10, 10, 10)
 Game.buildGrid()
