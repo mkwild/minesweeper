@@ -5,13 +5,13 @@ class MineGrid {
         this.rowCount = height
         this.columnCount = width
         this.maxMines = maxMines
+        this.mines = this.minePlacement()
     }
 
     minePlacement() {
-        const maxMines = this.maxMines
         const numOfCells = this.rowCount * this.columnCount
         let minedCells = []
-        while (minedCells.length < maxMines) {
+        while (minedCells.length < this.maxMines) {
             let mine = Math.ceil(Math.random()*numOfCells)
             if (minedCells.includes(mine) === false) {
                 minedCells.push(mine)
@@ -21,43 +21,58 @@ class MineGrid {
     }
 
     buildGrid() {
-        let cellCount = 1
-        let mines = this.minePlacement()
-        for (let row = 1; row < this.rowCount; row++) {
-            const rowElement = document.createElement("div")
-            rowElement.className = "row"
-            mainElement.append(rowElement)
-            for (let cell = 1; cell < this.columnCount; cell++) {
-                const cellElement = document.createElement("button")
-                const newCell = new mineCell(cellCount, mines)
-                if (newCell.isMine()) {
-                    cellElement.className = "mine"
-                }
-                else {
-                    cellElement.className = "safe" 
-                }
-                rowElement.append(cellElement)
-                cellCount++
-            }
-        }
+
     }
 
 }
 
-class mineCell {
-    constructor (x, mines) {
-        this.cellNumber = x
-        this.mines = mines
+class MineCell {
+    constructor (x, y, n, mines) {
+        this.cellNumber = n
+        this.position = [x, y]
+        this.isMine = this.isMineHandler()
     }
 
-    isMine() {
-        if (this.mines.includes(this.cellNumber)) {
+    isMineHandler(mines) {
+        if (mines.includes(this.cellNumber)) {
             return true
         }
         return false
     }
 
+    clickHandler(cells) {
+        if (this.isMine) {
+            alert("Boom! Game Over!")
+            return("X")
+        }
+        else {
+            let neighborMines = 0
+            for (let cellCount = 0; cellCount < cells.length; cellCount++) {
+                if ((cells[cellCount].position[0] >= (this.position[0] - 1) && cells[cellCount].position[0] <= (this.position[0] + 1)) && (cells[cellCount].position[1] >= (this.position[1] - 1) && cells[cellCount].position[1] <= (this.position[1] + 1))) {
+                    if (cells[cellcount].isMine) {
+                        neighborMines++
+                    }
+                }
+            }
+            if (neighborMines > 0) {
+                return(toString(neighborMines))
+            }
+            else {
+                this.revealAdjacent(cells)
+                return("")
+            }
+        }
+    }
+
+    revealAdjacent(cells) {
+        for (let cellCount = 0; cellCount < cells.length; cellCount++) {
+            if ((cells[cellCount].position[0] >= (this.position[0] - 1) && cells[cellCount].position[0] <= (this.position[0] + 1)) && (cells[cellCount].position[1] >= (this.position[1] - 1) && cells[cellCount].position[1] <= (this.position[1] + 1)) && cells[cellCount].isMine === false) {
+                const cell = document.getElementById(cellCount)
+                cell.innerHTML = cells[cellCount].clickHandler(cells)
+            }
+        }
+    }
 }
 
-const game = new MineGrid(10, 10, 10)
-game.buildGrid()
+const Game = new MineGrid(10, 10, 20)
+Game.buildGrid()
