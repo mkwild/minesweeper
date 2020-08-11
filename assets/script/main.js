@@ -21,7 +21,11 @@ class MineGrid {
     }
 
     buildGrid() {
-
+        for (rowCount = 1; rowCount <= this.height; rowCount++) {
+            let cellNumber = 1
+            const rowElement = document.createElement("div")
+            mainElement.append(rowElement)
+        }
     }
 
 }
