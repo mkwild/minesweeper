@@ -40,7 +40,7 @@ class MineCell {
         return false
     }
 
-    clickHandler(cells) {
+    leftClickHandler(cells) {
         if (this.isMine) {
             alert("Boom! Game Over!")
             return("X")
@@ -67,9 +67,22 @@ class MineCell {
     revealAdjacent(cells) {
         for (let cellCount = 0; cellCount < cells.length; cellCount++) {
             if ((cells[cellCount].position[0] >= (this.position[0] - 1) && cells[cellCount].position[0] <= (this.position[0] + 1)) && (cells[cellCount].position[1] >= (this.position[1] - 1) && cells[cellCount].position[1] <= (this.position[1] + 1)) && cells[cellCount].isMine === false) {
-                const cell = document.getElementById(cellCount)
-                cell.innerHTML = cells[cellCount].clickHandler(cells)
+                const cell = document.getElementById(cells[cellCount].cellNumber)
+                cell.innerHTML = cells[cellCount].leftClickHandler(cells)
             }
+        }
+    }
+
+    rightClickHandler() {
+        const cell = document.getElementById(this.cellNumber)
+        if (cell.innerHTML == "") {
+            return("&#9873")
+        }
+        else if (cell.innerHTML == "&#9873"){
+            return("?")
+        }
+        else {
+            return("")
         }
     }
 }
