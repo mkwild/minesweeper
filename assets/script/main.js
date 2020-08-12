@@ -32,6 +32,7 @@ class MineGrid {
         if (currentCleared === winCondition) {
             clearInterval(timeCounter)
             alert("You Are Winner!")
+            this.isLost === true
         }
     }
 
@@ -58,7 +59,6 @@ class MineGrid {
             }
         }
     }
-
 }
 
 class MineCell {
@@ -78,6 +78,7 @@ class MineCell {
     }
     
     clickHandler(mouseButton, cellsArray) {
+        let intervalSet
         if (mouseButton === 0) {
             const button = document.getElementById(this.cellNumber)
             button.innerHTML = this.leftClickHandler(cellsArray)
@@ -164,9 +165,15 @@ let timeCounter = function() {
     counter++
     timer.innerHTML = counter
 }
+let intervalSet
 mainElement.addEventListener("mouseup", function() {
     if (counter === 0 && Game.isLost === false) {
-        setInterval(timeCounter, 1000)
+        intervalSet = setInterval(timeCounter, 1000)
+    }
+})
+mainElement.addEventListener("mouseup", function() {
+    if (Game.isLost === true) {
+        clearInterval(intervalSet)
     }
 })
 
@@ -176,3 +183,8 @@ mainElement.addEventListener("contextmenu", function(e) {
 
 const Game = new MineGrid(10, 10, 10)
 Game.buildGrid()
+
+const resetButton = document.createElement("button")
+resetButton.className = "reset"
+resetButton.innerHTML = "RESET"
+footerElement.append(resetButton)
